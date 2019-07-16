@@ -34,13 +34,6 @@ func getItems(v interface{}) []reflect.Value {
 		for i := 0; i < len; i++ {
 			result = append(result, reflect.ValueOf(v).Index(i))
 		}
-	//case reflect.Map:
-	//	len := reflect.ValueOf(v).Len()
-	//	keys := reflect.ValueOf(v).MapKeys()
-	//	for i := 0; i < len; i++ {
-	//		key := keys[i]
-	//		result = append(result, reflect.ValueOf(v).MapIndex(key))
-	//	}
 	}
 	return result
 }
@@ -75,24 +68,14 @@ func Map(v interface{}, f interface{}) interface{} {
 	if len(vVal) == 0 {
 		return result.Interface()
 	}
-	//switch reflect.TypeOf(f).Kind() {
-	//case reflect.String:
-	//	for i := 0; i < len(vVal); i++ {
-	//		if vVal[i].Kind() == reflect.Struct {
-	//			result = reflect.Append(result, vVal[i].FieldByName(reflect.ValueOf(f).String()))
-	//		} else if vVal[i].Kind() == reflect.Map {
-	//			result = reflect.Append(result, vVal[i].MapIndex(reflect.ValueOf(f)))
-	//		}
-	//	}
-	//case reflect.Func:
-		for i := 0; i < len(vVal); i++ {
-			var params []reflect.Value
-			for z:=0;z<reflect.ValueOf(f).Type().NumIn();z++ {
-				params = append(params, vVal[i])
-			}
-			result = reflect.Append(result, reflect.ValueOf(f).Call(params)[0])
+	for i := 0; i < len(vVal); i++ {
+		var params []reflect.Value
+		for z := 0; z < reflect.ValueOf(f).Type().NumIn(); z++ {
+			params = append(params, vVal[i])
 		}
-	//}
+		result = reflect.Append(result, reflect.ValueOf(f).Call(params)[0])
+	}
+
 	return result.Interface()
 }
 

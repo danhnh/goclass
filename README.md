@@ -1,7 +1,7 @@
-# acb first golang course - Group 02
+# acb first golang course - Group 02 [![Build Status](https://travis-ci.org/danhnh/goclass.svg?branch=master)](https://travis-ci.org/danhnh/goclass) [![Coverage Status](https://coveralls.io/repos/github/danhnh/goclass/badge.svg?branch=master)](https://coveralls.io/github/danhnh/goclass?branch=master)
 
-With CI
-[![Build Status](https://travis-ci.org/danhnh/goclass.svg?branch=master)](https://travis-ci.org/danhnh/goclass)
+Ex2: Convert CSV data to YAML
 
-And Unit test
-[![Coverage Status](https://coveralls.io/repos/github/danhnh/goclass/badge.svg?branch=master)](https://coveralls.io/github/danhnh/goclass?branch=master)
+Ex3: Port lodash to Go, approach TDD
+
+Mentor: Mr.Phu @https://github.com/tpphu/golang-training

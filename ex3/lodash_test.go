@@ -185,41 +185,50 @@ func TestMax(t *testing.T) {
 }
 
 func TestIndexOf(t *testing.T) {
-	r := IndexOf(nil, 0, 0)
-	if r != -1 {
-		t.Errorf("\tIndexOf(nil) has error or incorrect value %d\n", r)
+	type parameter struct {
+		p1, p2 interface{}
+		p3 int
 	}
-	r = IndexOf([0]int{}, 0, 0)
-	if r != -1 {
-		t.Errorf("\tIndexOf(nil) has error or incorrect value %d\n", r)
+	testCases := []testcase{
+		{
+			want: -1, cases: []interface{}{
+			parameter{nil,0,0},
+			parameter{[0]int{},0,0},
+			parameter{[]int{},0,0},
+			parameter{map[string]string{},0,0},
+			parameter{[3]int{3, 1, 2}, 0, 0},
+			parameter{[]int{3, 1, 2}, 0, 0},
+			parameter{[6]map[string]string{{"3": "3"}, {"1": "3"}, {"2": "2"}, {"1": "1"}, {"2": "2"}, {"3": "3"}}, map[string]string{"3": "3"},0},
+		},
+		},
+		{
+			want: 1, cases: []interface{}{
+			parameter{[3]int{3, 1, 2},1,0},
+			parameter{[6]int{3, 1, 2, 1, 2, 3},1,0},
+			parameter{[]int{3, 1, 2},1,0},
+		},
+		},
+		{
+			want: 3, cases: []interface{}{
+			parameter{[]int{3, 1, 2, 1, 2, 3},1,3},
+			parameter{[6]int{3, 1, 2, 1, 2, 3},1,2},
+			parameter{[]int{3, 1, 2, 0, 2},0,0},
+		},
+		},
+		{
+			want: 5, cases: []interface{}{
+			parameter{[6]string{"3", "1", "2", "1", "2", "3"}, "3",1},
+		},
+		},
 	}
-	r = IndexOf(map[string]string{}, "a", 0)
-	if r != -1 {
-		t.Errorf("\tIndexOf(map[string]string{}) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([3]int{3, 1, 2}, 0, 0)
-	if r != -1 {
-		t.Errorf("\tIndexOf([3]int{3, 1, 2}, 0, 0) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([3]int{3, 1, 2}, 1, 0)
-	if r != 1 {
-		t.Errorf("\tIndexOf([3]int{3, 1, 2}, 0, 0) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([6]int{3, 1, 2, 1, 2, 3}, 1, 0)
-	if r != 1 {
-		t.Errorf("\tIndexOf([3]int{3, 1, 2}, 0, 0) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([6]int{3, 1, 2, 1, 2, 3}, 1, 2)
-	if r != 3 {
-		t.Errorf("\tIndexOf([3]int{3, 1, 2}, 0, 0) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([6]string{"3", "1", "2", "1", "2", "3"}, "3", 2)
-	if r != 5 {
-		t.Errorf("\tIndexOf([3]int{3, 1, 2}, 0, 0) has error or incorrect value %d\n", r)
-	}
-	r = IndexOf([6]map[string]string{{"3": "3"}, {"1": "3"}, {"2": "2"}, {"1": "1"}, {"2": "2"}, {"3": "3"}}, map[string]string{"3": "3"}, 0)
-	if r != -1 {
-		t.Errorf("\tIndexOf(Array of map) has error or incorrect value %d\n", r)
+
+
+	for c := range testCases {
+		for v := range testCases[c].cases {
+			if r := IndexOf(testCases[c].cases[v].(parameter).p1, testCases[c].cases[v].(parameter).p2, testCases[c].cases[v].(parameter).p3); r != testCases[c].want {
+				t.Errorf("\tIndexOf(%T,%T,%T) has error or incorrect value %d when %d is expected \n", testCases[c].cases[v].(parameter).p1, testCases[c].cases[v].(parameter).p2, testCases[c].cases[v].(parameter).p3, r, testCases[c].want)
+			}
+		}
 	}
 }
 

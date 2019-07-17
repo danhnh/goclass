@@ -38,19 +38,19 @@ func getItems(v interface{}) []reflect.Value {
 	return result
 }
 
-func Last(v interface{}) (interface{}, error) {
+func Last(v interface{}) interface{} {
 	if reflect.TypeOf(v) == nil {
-		return nil, errors.New("parameter cannot be nil")
+		panic("parameter cannot be nil")
 	}
 	switch reflect.TypeOf(v).Kind() {
 	case reflect.Slice, reflect.Array:
 		len := reflect.ValueOf(v).Len()
 		if len == 0 {
-			return nil, errors.New(reflect.TypeOf(v).Kind().String() + "is empty")
+			panic(reflect.TypeOf(v).Kind().String() + " is empty")
 		}
-		return reflect.ValueOf(v).Index(len - 1).Interface(), nil
+		return reflect.ValueOf(v).Index(len - 1).Interface()
 	}
-	return nil, errors.New("parameter is not valid")
+	panic("parameter is not valid")
 }
 
 func Map(v interface{}, f interface{}) interface{} {
@@ -91,30 +91,30 @@ func isGreater(v1, v2 interface{}) (bool, error) {
 	return false, errors.New("Cannot compare " + reflect.TypeOf(v1).Kind().String())
 }
 
-func Max(v interface{}) (interface{}, error) {
+func Max(v interface{}) interface{} {
 	if reflect.TypeOf(v) == nil {
-		return nil, errors.New("parameter cannot be nil")
+		panic("parameter cannot be nil")
 	}
 	switch reflect.TypeOf(v).Kind() {
 	case reflect.Slice, reflect.Array:
 		len := reflect.ValueOf(v).Len()
 		if len == 0 {
-			return nil, errors.New(reflect.TypeOf(v).Kind().String() + "is empty")
+			panic(reflect.TypeOf(v).Kind().String() + " is empty")
 		}
 		max := reflect.ValueOf(v).Index(0).Interface()
 		for i := 1; i < len; i++ {
 			val := reflect.ValueOf(v).Index(i).Interface()
 			b, e := isGreater(val, max)
 			if e != nil {
-				return nil, e
+				panic(e.Error())
 			}
 			if b {
 				max = val
 			}
 		}
-		return max, nil
+		return max
 	}
-	return nil, errors.New("parameter is not valid")
+	panic("parameter is not valid")
 }
 
 func IndexOf(v1, v2 interface{}, fromIndex int) int {

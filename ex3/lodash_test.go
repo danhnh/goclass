@@ -2,7 +2,6 @@ package ex3
 
 import (
 	"reflect"
-	//"strconv"
 	"testing"
 	"unsafe"
 )
@@ -58,14 +57,19 @@ func TestLast(t *testing.T) {
 			},
 		},
 	}
-	for v := range testErrorCase {
-		if _, e := Last(testErrorCase[v]); e == nil {
-			t.Errorf("\tLast(%T) not raise error but wanted error\n", testErrorCase[v])
-		}
+	for p := range testErrorCase {
+		t.Run("test error cases", func(t *testing.T) {
+			defer func() {
+				if err := recover(); err == nil {
+					t.Errorf("\tLast(%T) not raise error\n", testErrorCase[p])
+				}
+			}()
+			Last(testErrorCase[p])
+		})
 	}
 	for c := range testCases {
 		for v := range testCases[c].cases {
-			if r, e := Last(testCases[c].cases[v]); e != nil || r != testCases[c].want {
+			if r := Last(testCases[c].cases[v]); r != testCases[c].want {
 				t.Errorf("\tLast(%T) has error or incorrect value %s when %s is expected \n", testCases[c].cases[v], r, testCases[c].want)
 			}
 		}
@@ -135,41 +139,48 @@ func TestMap(t *testing.T) {
 }
 
 func TestMax(t *testing.T) {
-	_, r := Max(nil)
-	if r == nil {
-		t.Errorf("\tMax(nil) not raise error\n")
+	testErrorCase := []interface{}{
+		nil, [0]int{}, []int{}, map[string]string{}, [4]string{"5", "2", "1", "3"},
 	}
-	_, r = Max([0]int{})
-	if r == nil {
-		t.Errorf("\tMax([]int{}) not raise error\n")
+	testCases := []testcase{
+		{
+			want: 1, cases: []interface{}{
+				[1]int{1}, []int{1,0},
+			},
+		},
+		{
+			want: 2, cases: []interface{}{
+				[1]int{2}, []int{1,0,2,0,1},
+			},
+		},
+		{
+			want: uint(5), cases: []interface{}{
+			[1]uint{5}, []uint{1,0,2,5,1},
+		},
+		},
+		{
+			want: float32(5), cases: []interface{}{
+			[1]float32{5}, []float32{1,0,2,5,1},
+		},
+		},
 	}
-	_, r = Max(map[string]string{})
-	if r == nil {
-		t.Errorf("\tMax(map[string]string{}) not raise error\n")
+	for p := range testErrorCase {
+		t.Run("test error cases", func(t *testing.T) {
+			defer func() {
+				if err := recover(); err == nil {
+					t.Errorf("\tMax(%T) not raise error\n", testErrorCase[p])
+				}
+			}()
+			Max(testErrorCase[p])
+		})
 	}
-	v, r := Max([1]int{1})
-	if v != 1 || r != nil {
-		t.Errorf("\tMax([]int{1}) has error or incorrect value %T\n", v)
-	}
-	v, r = Max([1]int{2})
-	if v != 2 || r != nil {
-		t.Errorf("\tMax([]int{2}) has error or incorrect value %d\n", v)
-	}
-	v, r = Max([4]int{5, 2, 1, 3})
-	if v != 5 || r != nil {
-		t.Errorf("\tMax([4]int{5,2,1,3}) has error or incorrect value %d\n", v)
-	}
-	v, r = Max([4]uint{5, 2, 1, 3})
-	if v != uint(5) || r != nil {
-		t.Errorf("\tMax([4]uint{5,2,1,3}) has error or incorrect value %d %s\n", v, r)
-	}
-	v, r = Max([4]float32{5, 2, 1, 6})
-	if v != float32(6) || r != nil {
-		t.Errorf("\tMax([4]float32{5,2,1,6}) has error or incorrect value %d %s\n", v, r)
-	}
-	v, r = Max([4]string{"5", "2", "1", "3"})
-	if r == nil {
-		t.Errorf("\tMax([4]string{5,2,1,3}) has error or incorrect value %d\n", v)
+
+	for c := range testCases {
+		for v := range testCases[c].cases {
+			if r := Max(testCases[c].cases[v]); r != testCases[c].want {
+				t.Errorf("\tMax(%T) has error or incorrect value %t when %s is expected \n", testCases[c].cases[v], r, testCases[c].want)
+			}
+		}
 	}
 }
 
